@@ -10,7 +10,7 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: "/job",
+    path: "/jobs",
     route: JobRoutes,
   },
 ];

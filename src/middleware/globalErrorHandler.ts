@@ -3,6 +3,8 @@ import env from "../config/env.config";
 import AppError from "../errorHelper/AppError";
 import handleCastError from "../helpers/handleCastError";
 import handleDuplicateError from "../helpers/handleDuplicateError";
+import handleJsonWebTokenError from "../helpers/handleJsonWebTokenError";
+import handleTokenExpiredError from "../helpers/handleTokenExpiredError";
 import { handleValidationError } from "../helpers/handleValidationError";
 import handleZodError from "../helpers/handleZodError";
 import { TErrorSource } from "../interface/error.types";
@@ -45,7 +47,18 @@ const globalErrorHandler = async (
     statusCode = simpliFiedError.statusCode;
     message = simpliFiedError.message;
   }
-
+  //jsonwebtoken error
+  else if (err.name === "JsonWebTokenError") {
+    const simpliFiedError = handleJsonWebTokenError();
+    statusCode = simpliFiedError.statusCode;
+    message = simpliFiedError.message;
+  }
+  //token expires error
+  else if (err.name === "TokenExpiredError") {
+    const simpliFiedError = handleTokenExpiredError();
+    statusCode = simpliFiedError.statusCode;
+    message = simpliFiedError.message;
+  }
   //custom app error
   else if (err instanceof AppError) {
     statusCode = err.statuscode;
