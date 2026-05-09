@@ -3,12 +3,13 @@ import httpStatus from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { JobService } from "./job.service";
+import { log } from "console";
 
 const create = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
     const result = await JobService.create(req.body, String(decodedToken?._id));
-
+ 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,

@@ -19,7 +19,7 @@ const userSchema = new Schema<IUser>(
     },
     password: { type: String, required: true, trim: true, select: false },
   },
-  { versionKey: false },
+  {timestamps:true, versionKey: false },
 );
 
 // ─── Pre-save hook — hash password before saving ──────────────────

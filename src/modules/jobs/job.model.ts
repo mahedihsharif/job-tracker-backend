@@ -26,7 +26,7 @@ const jobSchema = new Schema<IJob>(
       required: true,
     },
   },
-  { versionKey: false },
+  {timestamps:true, versionKey: false },
 );
 
 export const Job = model<IJob>("Job", jobSchema);
