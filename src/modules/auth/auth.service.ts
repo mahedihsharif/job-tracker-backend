@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import httpStatus from "http-status-codes";
 import AppError from "../../errorHelper/AppError";
-import { createUserToken } from "../../utils/userToken";
+import { createNewAccessTokenWithRefreshToken, createUserToken } from "../../utils/userToken";
 import { User } from "../users/user.model";
 import { IUser } from "../users/user.types";
 
@@ -90,4 +90,14 @@ const getMe = async (userId: string) => {
   return rest;
 };
 
-export const AuthService = { register, login, resetPassword, getMe };
+const refreshToken = async (refreshToken: string) => {
+  const newAccessToken = await createNewAccessTokenWithRefreshToken(
+    refreshToken
+  );
+
+  return {
+    accessToken: newAccessToken,
+  };
+};
+
+export const AuthService = { register, login, resetPassword, getMe,refreshToken };

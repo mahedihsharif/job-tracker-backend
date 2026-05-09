@@ -29,6 +29,7 @@ router.post(
   validateRequest(userResetPasswordValidation),
   AuthController.resetPassword,
 );
+router.post("/refresh-token",AuthController.refreshToken)
 router.post("/logout", auth, AuthController.logout);
 router.get("/me", auth, AuthController.getMe);
 

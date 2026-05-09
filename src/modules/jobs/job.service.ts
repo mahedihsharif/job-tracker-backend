@@ -3,6 +3,7 @@ import AppError from "../../errorHelper/AppError";
 import { User } from "../users/user.model";
 import { Job } from "./job.model";
 import { IJob } from "./job.types";
+import { log } from "console";
 
 
 const create = async (payload: IJob, userId: string) => {
@@ -84,6 +85,7 @@ const updateJob = async (
   userId: string,
   jobId: string,
 ) => {
+  
   const updatedNewJob = await Job.findOneAndUpdate(
     { _id: jobId, user: userId },
     payload,
