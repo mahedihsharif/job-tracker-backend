@@ -65,9 +65,17 @@ const getMe = catchAsync(
 );
 
 const logout = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+  async (_req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("accessToken",{
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    res.clearCookie("refreshToken",{
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

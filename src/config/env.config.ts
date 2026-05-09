@@ -6,7 +6,8 @@ dotenv.config();
 const envSchema = z.object({
   //server
   NODE_ENV: z
-    .enum(["DEVELOPMENT", "TEST", "PRODUCTION"]),
+    .enum(["DEVELOPMENT", "TEST", "PRODUCTION"])
+    .default("DEVELOPMENT"),
   PORT: z.string().default("5000").transform(Number),
 
   //mongodb
