@@ -24,7 +24,7 @@ const getAllJobs = catchAsync(
 
     const {
       page = "1",
-      limit = "100",
+      limit = "10",
       search,
       status,
       apply_date_start,
