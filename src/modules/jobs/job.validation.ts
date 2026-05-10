@@ -32,26 +32,39 @@ export const jobValidationSchema = z
       .string()
       .min(10, { message: "Job details must be at least 10 characters" }),
 
-    apply_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
-      message: "Apply date must be a valid date",
-    }),
+    apply_date: z
+      .string()
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: "Apply date must be a valid date",
+      })
+      .optional(),
 
-    last_date: z.string().refine((val) => !isNaN(Date.parse(val)), {
-      message: "Last date must be a valid date",
-    }),
+    last_date: z
+      .string()
+      .refine((val) => !isNaN(Date.parse(val)), {
+        message: "Last date must be a valid date",
+      })
+      .optional(),
 
-    apply_email: z.email("Invalid email format"),
+    apply_email: z.email("Invalid email format").optional(),
 
     required_skills: z
       .array(z.string().min(1, { message: "Skill cannot be empty" }))
-      .min(1, { message: "At least one skill is required" }),
+      .min(1, { message: "At least one skill is required" })
+      .optional(),
 
     status: z.enum(["pending", "applied", "shortlisted"]),
   })
-  .refine((data) => new Date(data.last_date) >= new Date(data.apply_date), {
-    message: "Last date cannot be before apply date",
-    path: ["last_date"],
-  });
+  .refine(
+    (data) => {
+      if (!data.apply_date || !data.last_date) return true;
+      return new Date(data.last_date) >= new Date(data.apply_date);
+    },
+    {
+      message: "Last date cannot be before apply date",
+      path: ["last_date"],
+    },
+  );
 
 export const updateJobValidationSchema = z
   .object({
@@ -113,7 +126,7 @@ export const updateJobValidationSchema = z
   })
   .refine(
     (data) => {
-      if (!data.apply_date || !data.last_date) return true; // skip যদি না থাকে
+      if (!data.apply_date || !data.last_date) return true;
 
       return new Date(data.last_date) >= new Date(data.apply_date);
     },

@@ -10,10 +10,10 @@ export interface IJob {
     currency?: string;
   };
   job_details: string;
-  apply_date: Date;
-  last_date: Date;
-  apply_email: string;
-  required_skills: string[];
+  apply_date?: Date;
+  last_date?: Date;
+  apply_email?: string;
+  required_skills?: string[];
   status: TStatus;
   user: Types.ObjectId;
 }
