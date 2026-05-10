@@ -17,3 +17,21 @@ export interface IJob {
   status: TStatus;
   user: Types.ObjectId;
 }
+
+export interface IStatusCounts {
+  pending: number;
+  applied: number;
+  shortlisted: number;
+  [key: string]: number;
+}
+
+export interface IGetAllJobsResult {
+  jobs: IJob[];
+  total: number;
+  counts: IStatusCounts;
+}
+
+export interface IStatusCountItem {
+  _id: string;
+  count: number;
+}

@@ -1,10 +1,9 @@
 import httpStatus from "http-status-codes";
+import mongoose from "mongoose";
 import AppError from "../../errorHelper/AppError";
 import { User } from "../users/user.model";
 import { Job } from "./job.model";
-import { IJob } from "./job.types";
-import { log } from "console";
-
+import { IJob, IStatusCountItem, IStatusCounts } from "./job.types";
 
 const create = async (payload: IJob, userId: string) => {
   const user = await User.findById(userId);
@@ -46,7 +45,9 @@ const getAllJobs = async (
     last_date_end,
   } = filters;
 
-  const query: Record<string, unknown> = { user: userId };
+  const query: Record<string, unknown> = {
+    user: new mongoose.Types.ObjectId(userId),
+  };
   if (status) {
     query.status = status;
   }
@@ -69,15 +70,52 @@ const getAllJobs = async (
     };
   }
 
-  const [jobs, total] = await Promise.all([
-    Job.find(query)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
-    Job.countDocuments(query),
+  //using aggregation to get jobs, total count and status wise count in single query
+  const [result] = await Job.aggregate([
+    { $match: query },
+
+    {
+      $facet: {
+        jobs: [
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+        ],
+
+        total: [{ $count: "count" }],
+
+        statusCounts: [
+          {
+            $group: {
+              _id: "$status",
+              count: { $sum: 1 },
+            },
+          },
+        ],
+      },
+    },
   ]);
-  return { jobs, total };
+
+  const jobs = result.jobs;
+  const total = result.total[0]?.count || 0;
+
+  const counts = result.statusCounts.reduce(
+    (acc: IStatusCounts, item: IStatusCountItem) => {
+      acc[item._id] = item.count;
+      return acc;
+    },
+    {} as IStatusCounts,
+  );
+
+  return {
+    jobs,
+    total,
+    counts: {
+      pending: counts.pending || 0,
+      applied: counts.applied || 0,
+      shortlisted: counts.shortlisted || 0,
+    },
+  };
 };
 
 const updateJob = async (
@@ -85,7 +123,6 @@ const updateJob = async (
   userId: string,
   jobId: string,
 ) => {
-  
   const updatedNewJob = await Job.findOneAndUpdate(
     { _id: jobId, user: userId },
     payload,

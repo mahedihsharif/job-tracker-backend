@@ -3,13 +3,12 @@ import httpStatus from "http-status-codes";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { JobService } from "./job.service";
-import { log } from "console";
 
 const create = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
     const result = await JobService.create(req.body, String(decodedToken?._id));
- 
+
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
@@ -42,7 +41,7 @@ const getAllJobs = catchAsync(
       last_date_start?: string;
       last_date_end?: string;
     };
-    const { jobs, total } = await JobService.getAllJobs(
+    const { jobs, total, counts } = await JobService.getAllJobs(
       {
         page: parseInt(String(page)),
         limit: parseInt(String(limit)),
@@ -55,9 +54,7 @@ const getAllJobs = catchAsync(
         last_date_start: last_date_start
           ? new Date(last_date_start)
           : undefined,
-        last_date_end: last_date_end
-          ? new Date(last_date_end)
-          : undefined,
+        last_date_end: last_date_end ? new Date(last_date_end) : undefined,
       },
       String(decodedToken?._id),
     );
@@ -66,7 +63,7 @@ const getAllJobs = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "All Jobs retrieved successfully!",
-      data: { jobs, total },
+      data: { jobs, total, counts },
     });
   },
 );
