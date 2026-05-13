@@ -24,22 +24,22 @@ const getAllJobs = catchAsync(
 
     const {
       page = "1",
-      limit = "10",
+      limit = "100",
       search,
       status,
-      apply_start_date,
-      apply_end_date,
-      job_last_apply_start_date,
-      job_last_apply_end_date,
+      apply_date_start,
+      apply_date_end,
+      last_date_start,
+      last_date_end,
     } = req.query as {
       page?: string;
       limit?: string;
       search?: string;
       status?: string;
-      apply_start_date?: string;
-      apply_end_date?: string;
-      job_last_apply_start_date?: string;
-      job_last_apply_end_date?: string;
+      apply_date_start?: string;
+      apply_date_end?: string;
+      last_date_start?: string;
+      last_date_end?: string;
     };
     const { jobs, total } = await JobService.getAllJobs(
       {
@@ -47,15 +47,15 @@ const getAllJobs = catchAsync(
         limit: parseInt(String(limit)),
         search: search as string | undefined,
         status: status as string | undefined,
-        apply_start_date: apply_start_date
-          ? new Date(apply_start_date)
+        apply_date_start: apply_date_start
+          ? new Date(apply_date_start)
           : undefined,
-        apply_end_date: apply_end_date ? new Date(apply_end_date) : undefined,
-        job_last_apply_start_date: job_last_apply_start_date
-          ? new Date(job_last_apply_start_date)
+        apply_date_end: apply_date_end ? new Date(apply_date_end) : undefined,
+        last_date_start: last_date_start
+          ? new Date(last_date_start)
           : undefined,
-        job_last_apply_end_date: job_last_apply_end_date
-          ? new Date(job_last_apply_end_date)
+        last_date_end: last_date_end
+          ? new Date(last_date_end)
           : undefined,
       },
       String(decodedToken?._id),

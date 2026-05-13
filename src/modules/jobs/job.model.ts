@@ -8,7 +8,7 @@ const jobSchema = new Schema<IJob>(
     salary: {
       min: { type: Number },
       max: { type: Number },
-      currency: { type: String },
+      currency: { type: String,default:"BDT" },
     },
     job_details: { type: String, required: true, trim: true },
     apply_date: { type: Date, required: true },
@@ -17,7 +17,7 @@ const jobSchema = new Schema<IJob>(
     required_skills: [{ type: String, required: true }],
     status: {
       type: String,
-      enum: ["Pending", "Applied", "Shortlisted"],
+      enum: ["pending", "applied", "shortlisted"],
       required: true,
     },
     user: {

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-export type TStatus = "Pending" | "Applied" | "Shortlisted";
+export type TStatus = "pending" | "applied" | "shortlisted";
 
 export interface IJob {
   job_title: string;

@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
 import { model, Schema } from "mongoose";
+import * as bcrypt from "bcrypt";
 import env from "../../config/env.config";
 import { IUser } from "./user.types";
 

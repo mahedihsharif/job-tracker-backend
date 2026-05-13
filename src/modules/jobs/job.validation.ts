@@ -20,7 +20,7 @@ export const jobValidationSchema = z
           .number({ message: "Maximum salary must be a number" })
           .nonnegative("Max salary cannot be negative"),
 
-        currency: z.string().min(1, "Currency is required"),
+        currency: z.string().optional().default("BDT"),
       })
       .refine((data) => data.max >= data.min, {
         message: "Max salary must be greater than or equal to min salary",
@@ -46,7 +46,7 @@ export const jobValidationSchema = z
       .array(z.string().min(1, { message: "Skill cannot be empty" }))
       .min(1, { message: "At least one skill is required" }),
 
-    status: z.enum(["Pending", "Applied", "Shortlisted"]),
+    status: z.enum(["pending", "applied", "shortlisted"]),
   })
   .refine((data) => new Date(data.last_date) >= new Date(data.apply_date), {
     message: "Last date cannot be before apply date",
@@ -75,7 +75,7 @@ export const updateJobValidationSchema = z
           .number({ message: "Maximum salary must be a number" })
           .nonnegative("Max salary cannot be negative"),
 
-        currency: z.string().min(1, "Currency is required"),
+        currency: z.string().optional().default("BDT"),
       })
       .refine((data) => data.max >= data.min, {
         message: "Max salary must be greater than or equal to min salary",
@@ -109,7 +109,7 @@ export const updateJobValidationSchema = z
       .min(1, { message: "At least one skill is required" })
       .optional(),
 
-    status: z.enum(["Pending", "Applied", "Shortlisted"]).optional(),
+    status: z.enum(["pending", "applied", "shortlisted"]).optional(),
   })
   .refine(
     (data) => {

@@ -29,4 +29,7 @@ router.post(
   validateRequest(userResetPasswordValidation),
   AuthController.resetPassword,
 );
+router.post("/logout", auth, AuthController.logout);
+router.get("/me", auth, AuthController.getMe);
+
 export const AuthRoutes = router;

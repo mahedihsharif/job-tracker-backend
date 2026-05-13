@@ -49,8 +49,37 @@ const resetPassword = catchAsync(
   },
 );
 
+const getMe = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+    const result = await AuthService.getMe(String(decodedToken?._id));
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User retrieved successfully",
+      data: result,
+    });
+  },
+);
+
+const logout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User logged out successfully",
+      data: "",
+    });
+  },
+);
+
 export const AuthController = {
   register,
   login,
   resetPassword,
+  getMe,
+  logout
 };

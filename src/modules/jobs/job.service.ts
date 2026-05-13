@@ -4,6 +4,7 @@ import { User } from "../users/user.model";
 import { Job } from "./job.model";
 import { IJob } from "./job.types";
 
+
 const create = async (payload: IJob, userId: string) => {
   const user = await User.findById(userId);
   if (!user) {
@@ -26,10 +27,10 @@ const getAllJobs = async (
     limit: number;
     search?: string | undefined;
     status?: string | undefined;
-    apply_start_date?: Date | undefined;
-    apply_end_date?: Date | undefined;
-    job_last_apply_start_date?: Date | undefined;
-    job_last_apply_end_date?: Date | undefined;
+    apply_date_start?: Date | undefined;
+    apply_date_end?: Date | undefined;
+    last_date_start?: Date | undefined;
+    last_date_end?: Date | undefined;
   },
   userId: string,
 ) => {
@@ -38,10 +39,10 @@ const getAllJobs = async (
     limit,
     search,
     status,
-    apply_start_date,
-    apply_end_date,
-    job_last_apply_start_date,
-    job_last_apply_end_date,
+    apply_date_start,
+    apply_date_end,
+    last_date_start,
+    last_date_end,
   } = filters;
 
   const query: Record<string, unknown> = { user: userId };
@@ -54,16 +55,16 @@ const getAllJobs = async (
       { company_name: { $regex: search, $options: "i" } },
     ];
   }
-  if (apply_start_date && apply_end_date) {
+  if (apply_date_start && apply_date_end) {
     query.apply_date = {
-      $gte: new Date(apply_start_date),
-      $lte: new Date(apply_end_date),
+      $gte: new Date(apply_date_start),
+      $lte: new Date(apply_date_end),
     };
   }
-  if (job_last_apply_start_date && job_last_apply_end_date) {
+  if (last_date_start && last_date_end) {
     query.last_date = {
-      $gte: new Date(job_last_apply_start_date),
-      $lte: new Date(job_last_apply_end_date),
+      $gte: new Date(last_date_start),
+      $lte: new Date(last_date_end),
     };
   }
 

@@ -8,15 +8,17 @@ import { IUser } from "../users/user.types";
 const register = async (payload: IUser) => {
   const { name, email, password } = payload;
   const user = await User.findOne({ email });
+
   if (user) {
     throw new AppError(httpStatus.BAD_REQUEST, `${email} is already exist!`);
   }
-  const newUser = User.create({
+  const newUser =await User.create({
     name,
     email,
     password,
   });
-  return newUser;
+  const { password:newPassword,...rest}=newUser.toObject()
+  return rest;
 };
 
 const login = async (payload: { email: string; password: string }) => {
@@ -76,4 +78,16 @@ const resetPassword = async (newPassword: string, userId: string) => {
   };
 };
 
-export const AuthService = { register, login, resetPassword };
+const getMe = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "User doesn't found, please check and try again!",
+    );
+  }
+  const { password, ...rest } = user.toObject();
+  return rest;
+};
+
+export const AuthService = { register, login, resetPassword, getMe };
